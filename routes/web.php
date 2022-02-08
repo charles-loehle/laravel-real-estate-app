@@ -11,6 +11,8 @@ use App\Http\Controllers\FrontPropertyListController;
 Auth::routes();
 
 Route::get('/', [FrontPropertyListController::class, 'index']);
+Route::get('/property/{id}', [FrontPropertyListController::class, 'show'])->name('property.view');
+Route::get('/property/filterByPrice', [FrontPropertyListController::class, 'filterByPrice']);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 

@@ -2,6 +2,7 @@
 
 @section('content')
 
+	<!-- Hero section -->
 	<section class="py-5 text-center container">
 		<div class="row py-lg-5">
 			<div class="col-lg-6 col-md-8 mx-auto">
@@ -15,21 +16,29 @@
 		</div>
 	</section>
 
+	<!-- Properties list -->
 	<div class="album py-5 bg-light">
 		<div class="container">
-			<h2>Properties</h2>
-
-			<form class="mb-4" action="{{ route('search') }}" method="get">
+			@if (request()->segment(1) == 'search')
+				<h2>Properties in {{request()->address}}</h2>
+			@else
+				<h2>Recent Properties</h2>
+			@endif
+	
+			{{-- @php
+				echo request()->segment(1);
+			@endphp --}}
+			<!-- Search Form -->
+			<form class="row row-cols-lg-auto g-3 align-items-center mb-4" action="{{ route('search') }}" method="get">
 				@csrf
 
-				<div class="form-group">
-					<input class="form-control" type="text" name="address" placeholder="enter location">
+				<div class="col-12 ">
+					<input class="form-control" type="text" name="address" placeholder="Enter a location" value="{{request()->address}}">
 				</div>
 
-				<div class="form-group mb-2">
-					<label for="description">Choose Category</label>
-					<select name="category" class="form-control @error('category') is-invalid @enderror">
-						<option value="">Select</option>
+				<div class="col-12 ">
+					<select name="category" class="form-select @error('category') is-invalid @enderror">
+						<option value="" selected>{{request()->category ? App\Models\Category::find(request()->category)->name : 'All Home Types'}}</option>
 						@foreach (App\Models\Category::all() as $category)
 							<option value="{{$category->id}}">
 								{{$category->name}}
@@ -38,51 +47,146 @@
 					</select>
 				</div>
 
-				<button type="submit" class="btn btn-primary">Search</button>
+				<div class="col-12 ">
+					<select name="bedrooms" class="form-select @error('bedrooms') is-invalid @enderror">
+						<option value="" selected>{{request()->bedrooms ? request()->bedrooms . ' ' . 'All Bedrooms' : 'Bedrooms'}}</option>
+						<option value="2">
+							2
+						</option>
+						<option value="3">
+							3
+						</option>
+						<option value="4">
+							4
+						</option>
+						<option value="5">
+							5
+						</option>
+					</select>
+				</div>
 
+				<div class="col-12">
+					<button type="submit" class="btn btn-primary">Search</button>
+				</div>
 			</form>
 
+        <!-- Filter by price -->
+        <h3>Filter by price</h3>
+        <form action="" method="GET">
+          <input type="text" name="min" class="form-control" placeholder="minimum price">
+          <input type="text" name="max" class="form-control" placeholder="maximum price">
+          <input type="hidden" name="categoryId" value="">
+          <br>
+          <input type="submit" value="Filter" class="btn btn-secondary">
+        </form>
+
+			<!-- Search results -->
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-	
-				@foreach($properties as $property)
-					<div class="col">
-						<div class="card shadow-sm">
-							{{-- @php
-								echo Storage::url($property->image);
-							@endphp --}}
-							<img src="{{Storage::url($property->image)}}>
-	
-							<div class="card-body">
-								<p class="card-text">
-									category: {{$property->category->name}}
-								</p>
-								<p class="card-text">
-									${{$property->price}}
-								</p>
-								<p class="card-text">
-									{{$property->address}}
-								</p>
-								<p class="card-text">
-									{{$property->bedrooms}} bedrooms
-								</p>
-								<p class="card-text">
-									{{$property->bathrooms}} bathrooms
-								</p>
-								<div class="d-flex justify-content-between align-items-center">
-									<div class="btn-group">
-										<button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-										<button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-									</div>
-									<small class="text-muted">9 mins</small>
+				@if (count($properties) > 0)
+				
+					@foreach($properties as $property)
+						<div class="col">
+							<div class="card shadow-sm">
+								<img src="{{Storage::url($property->image)}}">
+
+								<div class="card-body">
+									<p class="card-text">
+										${{$property->price}}
+									</p>
+									<p class="card-text">
+										{{$property->address}}
+									</p>
+									<p class="card-text">
+										{{$property->bedrooms}} bedrooms
+									</p>
+									<p class="card-text">
+										{{$property->bathrooms}} bathrooms
+									</p>
+									<a href="{{route('property.view', [$property->id])}}" class="btn btn-outline-success">View</a>
 								</div>
 							</div>
 						</div>
-					</div>
-				@endforeach
-			
-		
+					@endforeach
+				@else
+					<p>No properties found.</p>
+				@endif
+
 			</div>
+			
 		</div>
 	</div>
+
+	<!-- Carousel -->
+	<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+
+		<!-- Carousel images -->
+		{{-- <div class="carousel-inner">
+			<div class="carousel-item active">
+				<div class="row">
+					@foreach($randomProperties as $property)
+						<div class="col-4">
+							<div class="card mb-4 shadow-sm">
+								<img src="{{Storage::url($property->image)}}" height="200" width="100%" class="">
+								<div class="card-body">
+									<p>{{$property->address}}</p>
+								</div>
+								<div class="d-flex justify-content-between align-items-center">
+									<div class="btn-group">
+										<a href="{{route('property.view', [$property->id])}}" type="button" class="btn btn-sm btn-outline-success">View</a>
+										<button type="button" class="btn btn-sm btn-outline-success">Edit</button>
+									</div>
+									<small class="text-muted">${{$property->price}}</small>
+								</div>
+							</div>
+						</div>
+					@endforeach 
+
+				</div>
+			</div>
+			
+			<div class="carousel-item">
+				<div class="row">
+					@foreach($randomItemProperties as $property)
+						<div class="col-4">
+							<div class="card mb-4 shadow-sm">
+								<img src="{{Storage::url($property->image)}}" height="200" width="100%" class="">
+								<div class="card-body">
+									<p>{{$property->address}}</p>
+								</div>
+								<div class="d-flex justify-content-between align-items-center">
+									<div class="btn-group">
+										<a href="{{route('property.view', [$property->id])}}" type="button" class="btn btn-sm btn-outline-success">View</a>
+										<button type="button" class="btn btn-sm btn-outline-success">Edit</button>
+									</div>
+									<small class="text-muted">${{$property->price}}</small>
+								</div>
+							</div>
+						</div>
+					@endforeach 
+
+				</div>
+			</div>
+		</div> --}}
+
+		<!-- Carousel controls -->
+		{{-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Previous</span>
+		</button>
+		<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+			<span class="carousel-control-next-icon" aria-hidden="true"></span>
+			<span class="visually-hidden">Next</span>
+		</button> --}}
+	</div>
+
+	<footer class="text-muted py-5">
+		<div class="container">
+			<p class="float-end mb-1">
+				<a href="#">Back to top</a>
+			</p>
+			<p class="mb-1">Album example is &copy; Bootstrap, but please download and customize it for yourself!</p>
+			<p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a href="/docs/5.1/getting-started/introduction/">getting started guide</a>.</p>
+		</div>
+	</footer>
 
 @endsection

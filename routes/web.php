@@ -10,15 +10,14 @@ use App\Http\Controllers\FrontPropertyListController;
 
 Auth::routes();
 
+// Frontend User routes
+Route::get('/home', [HomeController::class, 'index'])->name('home');// auth protected
 Route::get('/', [FrontPropertyListController::class, 'index']);
-Route::get('/property/{id}', [FrontPropertyListController::class, 'show'])->name('property.view');
-Route::get('/property/filterByPrice', [FrontPropertyListController::class, 'filterByPrice']);
-
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-
+Route::get('/property/{id}', [FrontPropertyListController::class, 'show'])->name('property.show');
 Route::get('/search', [SearchController::class, 'search'])
   ->name('search');
 
+// Admin routes
 Route::group(['prefix' => 'auth', 'middleware' => ['auth', 'isAdmin']], function () {
   Route::get('/dashboard', function () {
     return view('admin.dashboard');

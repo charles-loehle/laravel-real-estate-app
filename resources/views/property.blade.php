@@ -31,11 +31,11 @@
 			<!-- Search Form -->
 			<form class="row row-cols-lg-auto g-3 align-items-center mb-4" action="{{ route('search') }}" method="get">
 				@csrf
-
+        <!-- Filter by address -->
 				<div class="col-12 ">
 					<input class="form-control" type="text" name="address" placeholder="Enter a location" value="{{request()->address}}">
 				</div>
-
+        <!-- Filter by category -->
 				<div class="col-12 ">
 					<select name="category" class="form-select @error('category') is-invalid @enderror">
 						<option value="" selected>{{request()->category ? App\Models\Category::find(request()->category)->name : 'All Home Types'}}</option>
@@ -46,7 +46,7 @@
 						@endforeach
 					</select>
 				</div>
-
+        <!-- Filter by bedrooms -->
 				<div class="col-12 ">
 					<select name="bedrooms" class="form-select @error('bedrooms') is-invalid @enderror">
 						<option value="" selected>{{request()->bedrooms ? request()->bedrooms . ' ' . 'All Bedrooms' : 'Bedrooms'}}</option>
@@ -64,22 +64,22 @@
 						</option>
 					</select>
 				</div>
+        <!-- Filter by price -->
+				<div class="col-12">
+					<input value="{{request()->min}}" type="text" name="min" class="form-control" placeholder="min price">
+				</div>
+				<div class="col-12">
+					<input value="{{request()->max}}" type="text" name="max" class="form-control" placeholder="max price">
+				</div>
 
 				<div class="col-12">
 					<button type="submit" class="btn btn-primary">Search</button>
 				</div>
 			</form>
 
-        <!-- Filter by price -->
-        <h3>Filter by price</h3>
-        <form action="" method="GET">
-          <input type="text" name="min" class="form-control" placeholder="minimum price">
-          <input type="text" name="max" class="form-control" placeholder="maximum price">
-          <input type="hidden" name="categoryId" value="">
-          <br>
-          <input type="submit" value="Filter" class="btn btn-secondary">
-        </form>
-
+			<div class="col-12">
+				<a href="{{request()->url()}}" class="btn btn-primary">Reset Search</a>
+			</div>
 			<!-- Search results -->
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 				@if (count($properties) > 0)
@@ -102,7 +102,7 @@
 									<p class="card-text">
 										{{$property->bathrooms}} bathrooms
 									</p>
-									<a href="{{route('property.view', [$property->id])}}" class="btn btn-outline-success">View</a>
+									<a href="{{route('property.show', [$property->id])}}" class="btn btn-outline-success">View</a>
 								</div>
 							</div>
 						</div>

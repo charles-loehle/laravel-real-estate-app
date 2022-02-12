@@ -12,30 +12,13 @@ class SearchController extends Controller
       $address = $request->address;
       $category = $request->category;
       $bedrooms = $request->bedrooms;
-      //dd($category);
 
-      // if($request->address != '' || $request->category != '' || $request->bedrooms != ''){
-      //   $properties = Property::when($category, function ($query, $category) {
-      //     return $query->where('category_id', $category);
-      //   })
-      //   ->when($address, function ($query, $address) {
-      //     return $query->where('address', 'like', "%{$address}%");
-      //   })->when($bedrooms, function ($query, $bedrooms) {
-      //     return $query->where('bedrooms', $bedrooms);
-      //   })
-      //   ->get();
-      // }
+      $min = $request->min;
+      $max = $request->max;
+      //dd($address);
+      //dd(gettype($min));
 
       $properties = Property::query();
-
-      if($address != ''){
-        // $properties = Property::where('address', 'LIKE', '%'.$address.'%')->get();
-        $properties->where('address', 'LIKE', '%'.$address.'%');
-      }
-
-      if($category != ''){
-        $properties->where('category_id', $category);
-      }
 
       // if($request->address != '' && $request->category != ''){
       //   $properties = Property::where('address', 'LIKE', '%'.$address.'%')->where('category_id', $category)->get();
@@ -44,6 +27,15 @@ class SearchController extends Controller
       // if($request->category != '' && $request->bedrooms != ''){
       //   $properties = Property::where('category_id', $category)->where('bedrooms', $bedrooms)->get();
       // }
+
+      if($address != ''){
+        //dd($address);
+        $properties->where('address', 'LIKE', '%'.$address.'%');
+      }
+
+      if($category != ''){
+        $properties->where('category_id', $category);
+      }
 
       if($bedrooms != ''){
         $properties->where('bedrooms', $bedrooms);
@@ -57,18 +49,14 @@ class SearchController extends Controller
       //   $properties = Property::where('address', 'LIKE', '%'.$address.'%')->where('category_id', $category)->where('bedrooms', $bedrooms)->get();
       // }
 
+      if($min != '' && $max != ''){
+        $min = (int)(str_replace(',', '', $min));
+        $max = (int)(str_replace(',', '', $max));
+        $properties->whereBetween('price', [
+          $min, $max
+        ]);
+      }
 
-      //$properties->get()
-      
-
-      // $properties = DB::table('properties')
-      //         ->where('address', 'like', "%{$address}%")
-      //         ->orWhere(function ($query) use($bedrooms) {
-      //           $query->where('category_id', $category)
-      //                 ->where('bedrooms', $bedrooms);
-      //         })->get();
-
-      // return view('property', compact('properties'));
       //dd($properties->toSql());
        return view('property', ['properties' => $properties->get()]);
     }

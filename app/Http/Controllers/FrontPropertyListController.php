@@ -37,7 +37,4 @@ class FrontPropertyListController extends Controller
       return view('show', compact('property', 'propertyFromSameCategories'));
     }
 
-    public function filterByPrice(Request $request) {
-      return 'filter';
-    }
 }

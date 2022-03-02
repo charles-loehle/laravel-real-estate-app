@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container">
-	<div class="">
+	<div class="mb-5">
 		<div class="row justify-content-center">
 			<div class="">
         <div class="gallery-wrap"> 
@@ -19,7 +19,8 @@
 						<li>{{$property->bathrooms}} baths</li>
 					</ul>
 					<div>
-						<p>${{$property->price}}</p>
+
+						<like-button property-id="{{ $property->id }}" likes={{ $likes }}></like-button>
 					</div>
         </div> 
       </div>

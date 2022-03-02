@@ -13,8 +13,18 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
                     {{ __('You are logged in!') }}
+
+                    <h3>My Saved Properties</h3>
+                    @if (auth()->user()->like)
+                        @foreach (auth()->user()->like as $likes)
+                            <div class="col-4 pb-4">
+                                <a href="{{route('frontproperty.show', [$likes->id])}}">
+                                    <img class="w-100" src="{{ Storage::url($likes->image) }}" alt="">
+                                </a>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>

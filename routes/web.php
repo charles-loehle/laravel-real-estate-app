@@ -2,22 +2,26 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LikesController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\CategoryController;
 // use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\FrontPropertyListController;
 
+// AUTHENTICATION ROUTES 
 Auth::routes();
+// /login => /home (both admin and user)
+Route::get('/home', [HomeController::class, 'index'])->name('home');// auth protected user and admin dashboard 
 
-// Frontend User routes
-Route::get('/home', [HomeController::class, 'index'])->name('home');// auth protected
-Route::get('/', [FrontPropertyListController::class, 'index']);
-Route::get('/property/{id}', [FrontPropertyListController::class, 'show'])->name('property.show');
+// USER ROUTES  
+Route::get('/', [FrontPropertyListController::class, 'index']);// list all properties
+Route::get('/property/{id}', [FrontPropertyListController::class, 'show'])->name('frontproperty.show');
 Route::get('/search', [SearchController::class, 'search'])
   ->name('search');
+Route::post('like/{property}', [LikesController::class, 'store']);
 
-// Admin routes
+// ADMIN DASHBOARD ROUTES 
 Route::group(['prefix' => 'auth', 'middleware' => ['auth', 'isAdmin']], function () {
   Route::get('/dashboard', function () {
     return view('admin.dashboard');

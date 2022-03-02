@@ -25,10 +25,7 @@
 				<h2>Recent Properties</h2>
 			@endif
 	
-			{{-- @php
-				echo request()->segment(1);
-			@endphp --}}
-			<!-- Search Form -->
+			<!-- SEARCH -->
 			<form class="row row-cols-lg-auto g-3 align-items-center mb-4" action="{{ route('search') }}" method="get">
 				@csrf
         <!-- Filter by address -->
@@ -71,7 +68,6 @@
 				<div class="col-12">
 					<input value="{{request()->max}}" type="text" name="max" class="form-control" placeholder="max price">
 				</div>
-
 				<div class="col-12">
 					<button type="submit" class="btn btn-primary">Search</button>
 				</div>
@@ -80,7 +76,7 @@
 			<div class="col-12">
 				<a href="{{request()->url()}}" class="btn btn-primary">Reset Search</a>
 			</div>
-			<!-- Search results -->
+			
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 				@if (count($properties) > 0)
 				
@@ -102,7 +98,13 @@
 									<p class="card-text">
 										{{$property->bathrooms}} bathrooms
 									</p>
-									<a href="{{route('property.show', [$property->id])}}" class="btn btn-outline-success">View</a>
+									<a href="{{route('frontproperty.show', [$property->id])}}" class="btn btn-outline-success">View</a>
+
+									<like-button 
+										property-id="{{ $property->id }}" 
+										likes={{ $likes = auth()->user() ? auth()->user()->like->contains($property->id) : false }}
+									></like-button>
+
 								</div>
 							</div>
 						</div>

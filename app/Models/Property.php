@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Property extends Model
 {
@@ -18,4 +19,9 @@ class Property extends Model
       // category_id of properties table (1) (local key)
       return $this->hasOne(Category::class, 'id', 'category_id');
     }
+
+      // a Property can have many Users that like it 
+      public function likers() {
+        return $this->belongsToMany(User::class);
+      }
 }

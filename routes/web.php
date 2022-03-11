@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\LikesController;
-use App\Http\Controllers\SearchController;
 // use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\PropertyController;
 use App\Http\Controllers\FrontPropertyListController;
@@ -27,6 +28,6 @@ Route::group(['prefix' => 'auth', 'middleware' => ['auth', 'isAdmin']], function
     return view('admin.dashboard');
   });
   Route::resource('category', CategoryController::class);
-  // Route::resource('subcategory', SubCategoryController::class);
   Route::resource('property', PropertyController::class);
+  Route::get('users',[UserController::class, 'index'])->name('user.index');
 });

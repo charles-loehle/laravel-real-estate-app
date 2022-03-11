@@ -104,7 +104,7 @@
 										property-id="{{ $property->id }}" 
 										likes={{ $likes = auth()->user() ? auth()->user()->like->contains($property->id) : false }}
 									></like-button>
-
+									
 								</div>
 							</div>
 						</div>

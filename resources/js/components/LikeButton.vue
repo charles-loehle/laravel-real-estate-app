@@ -36,7 +36,7 @@ export default {
     },
     computed: {
         buttonText() {
-            return this.status ? "Unlike" : "Like";
+            return this.status ? "Unfavorite" : "Favorite";
         },
     },
 };
